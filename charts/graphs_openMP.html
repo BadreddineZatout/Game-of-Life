@@ -10,20 +10,94 @@
 <body>
 
     <div class="row p-4">
-        <div class="container mt-5 col-5 p-2">
+        <div class="container mt-5 col-6 p-2">
             <h3>Acceleration en fonction de nombre de threads</h3>
             <div>
                 <span><p>La taille de la matrice est : 1000x1000</p></span>
                 <canvas id="chart_threads"></canvas>
             </div>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Nombre de thread</th>
+                    <th scope="col">Temps parallele</th>
+                    <th scope="col">Temps séquenciel</th>
+                    <th scope="col">Accéleration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">2</th>
+                    <td>4.7165s</td>
+                    <td>9.0087s</td>
+                    <td>1.91</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">4</th>
+                    <td>4.4496s</td>
+                    <td>9.0087s</td>
+                    <td>2.02</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">8</th>
+                    <td>4.5276s</td>
+                    <td>9.0087s</td>
+                    <td>1.98</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">16</th>
+                    <td>4.6547s</td>
+                    <td>9.0087s</td>
+                    <td>1.93</td>
+                  </tr>
+                </tbody>
+              </table>
         </div>
 
-        <div class="container mt-5 col-5 p-2">
+        <div class="container mt-5 col-6 p-2">
             <h3>Acceleration en fonction de la taille de matrice</h3>
             <div>
                 <span><p> Le nombre de threads est : 4</p></span>
                 <canvas id="chart_probleme"></canvas>
             </div>
+            <br>
+            <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th scope="col">Taille du matrice</th>
+                    <th scope="col">Temps parallele</th>
+                    <th scope="col">Temps séquenciel</th>
+                    <th scope="col">Accéleration</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <th scope="row">50x50</th>
+                    <td>0.1402s</td>
+                    <td>0.0319s</td>
+                    <td>0.22</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">100x100</th>
+                    <td>1.2026s</td>
+                    <td>2.3730s</td>
+                    <td>1.97s</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">1000x1000</th>
+                    <td>4.5320s</td>
+                    <td>9.4319s</td>
+                    <td>2.08s</td>
+                  </tr>
+                  <tr>
+                    <th scope="row">2000x2000</th>
+                    <td>18.376s</td>
+                    <td>35.368s</td>
+                    <td>1.92s</td>
+                  </tr>
+                </tbody>
+              </table>
         </div>
     </div>
     
