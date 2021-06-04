@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
-/*  game of lide  - MPI Version   */
+/*  game of lide  - MPI Version  */
 
 
 #define  ml 80
