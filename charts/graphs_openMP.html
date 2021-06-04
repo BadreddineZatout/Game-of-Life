@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="bootstrap.min.css" rel="stylesheet">
+    <title>Document</title>
+</head>
+<body>
+
+    <div class="row p-4">
+        <div class="container mt-5 col-5 p-2">
+            <h3>Acceleration en fonction de nombre de threads</h3>
+            <div>
+                <span><p>La taille de la matrice est : 1000x1000</p></span>
+                <canvas id="chart_threads"></canvas>
+            </div>
+        </div>
+
+        <div class="container mt-5 col-5 p-2">
+            <h3>Acceleration en fonction de la taille de matrice</h3>
+            <div>
+                <span><p> Le nombre de threads est : 4</p></span>
+                <canvas id="chart_probleme"></canvas>
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="bootstrap.bundle.min.js"></script>
+    <script src="chart.js"></script>
+    <script >
+
+        const labels_threads = [
+            '2',
+            '4',
+            '8',
+            '16',
+        ];
+
+        const labels_probleme = [
+            '50x50',
+            '500x500',
+            '1000x1000',
+            '2000x2000',
+        ];
+
+        const data_threads = {
+            labels: labels_threads,
+            datasets: [{
+            label: 'Acceleration',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [1.91, 2.02, 1.98,1.93],
+            }]
+        };
+
+        const data_probleme = {
+            labels: labels_probleme,
+            datasets: [{
+            label: 'Acceleration',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: [0.22, 1.97, 2.08, 1.92],
+            }]
+        };
+
+        const config_threads = {
+            type: 'line',
+            data: data_threads,
+            options: {}
+        };
+
+        const config_probleme = {
+            type: 'line',
+            data: data_probleme,
+            options: {}
+        };
+
+        let chart_threads = new Chart(
+            document.getElementById('chart_threads'),
+            config_threads
+        );
+
+        let chart_probleme = new Chart(
+            document.getElementById('chart_probleme'),
+            config_probleme
+        );
+
+    </script>
+</body>
+</html>
