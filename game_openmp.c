@@ -1,11 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <windows.h>
+#include <unistd.h>
+#include <omp.h>
 /*  game of lide    */
 
 
- #define  ml 80
- #define mc 100
+#define  maxl 2000
+#define maxc 2000
 
 enum{
     dead, alive
@@ -16,11 +17,11 @@ void print_matrix(char *m, int l, int c){
         printf("--");
     }
     printf("\n");
-    for(int i=0; i<l; i++){
+    for(int i=0; i<maxl; i++){
         printf("| ");
         for(int j=0; j<c; j++){
             if(*(m + i*c+ j)){
-                printf("##");
+                printf("\033[105m \033[0m");
             }else{
                 printf("  ");
             }
@@ -59,11 +60,15 @@ char update_cell(char *m, int ipos, int jpos, int l, int c){
 }
 
 void updateV1(char *m, char *bis, int l, int c){
+    omp_set_num_threads(1);
+    #pragma omp parallel for
     for(int i=0; i<l; i++){
         for(int j=0; j<c; j++){
             *(bis + i * c +j) = update_cell(m,i,j,l,c);
         }
     }
+    #pragma omp barrier
+    #pragma omp parallel for
     for (int i = 0; i < l; i++)
     {
         for(int j=0; j<c; j++){
@@ -86,35 +91,21 @@ void set_matrix(char *m, int l, int c,char *s, int sl, int sc, int x, int y){
 }
 
 int main(void){
-    // int l, c;
-    int nbr_gen;
-    printf("BIENVENU AU JEU DE LA VIE\n");
-    // printf("veuilllez entres les dimensions : \n");
-    // printf("Nombre des lignes : ");
-    // scanf("%d",&l);
-    // printf("\nNombre des colonnes : ");
-    // scanf("%d",&c);
-    printf("veuilllez entres le nombre des generations : ");
-    scanf("%d",&nbr_gen);
-    char matrix[ml][mc] = {dead};
-    char bis[ml][mc] = {dead};
-    char canon[9][36] = {
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
-          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
-          {1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    char matrix[maxl][maxc] = {dead};
+    char bis[maxl][maxc]= {dead};
+    char canon[3][3] = {
+          {0,0,0},
+          {1,1,1},
+          {0,0,0},
         };
-    set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
-    for(int i=0; i<nbr_gen;i++){
-        system("cls");
-        updateV1(&matrix[0][0], &bis[0][0], ml, mc);
-        print_matrix(&matrix[0][0], ml, mc);
-        Sleep(10);
+    set_matrix(&matrix[0][0], maxl, maxc, &canon[0][0], 3, 3, 10, 10);
+    int i=0;
+    double t1= omp_get_wtime();
+    while(i<=200)
+    {
+        updateV1(&matrix[0][0], &bis[0][0], maxl, maxc);
+        i++;
     }
+    printf("le temps %lf",omp_get_wtime()-t1);
     return 0;
 }
