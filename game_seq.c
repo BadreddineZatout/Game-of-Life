@@ -4,8 +4,8 @@
 /*  game of lide    */
 
 
- #define  ml 80
- #define mc 100
+ #define  ml 1000
+ #define mc 1000
 
 enum{
     dead, alive
@@ -58,7 +58,7 @@ char update_cell(char *m, int ipos, int jpos, int l, int c){
     }
 }
 
-void updateV1(char *m, char *bis, int l, int c){
+void update(char *m, char *bis, int l, int c){
     for(int i=0; i<l; i++){
         for(int j=0; j<c; j++){
             *(bis + i * c +j) = update_cell(m,i,j,l,c);
@@ -96,7 +96,7 @@ int main(void){
     // scanf("%d",&c);
     printf("veuilllez entres le nombre des generations : ");
     scanf("%d",&nbr_gen);
-    char matrix[ml][mc] = {dead};
+    char matrix[ml][mc]= {dead};
     char bis[ml][mc] = {dead};
     char canon[9][36] = {
           {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
@@ -112,9 +112,10 @@ int main(void){
     set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
     for(int i=0; i<nbr_gen;i++){
         system("cls");
-        updateV1(&matrix[0][0], &bis[0][0], ml, mc);
+        update(&matrix[0][0], &bis[0][0], ml, mc);
         print_matrix(&matrix[0][0], ml, mc);
         Sleep(10);
     }
+    
     return 0;
 }
