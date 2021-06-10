@@ -5,8 +5,8 @@
 /*  game of lide    */
 
 
-#define  maxl 2000
-#define maxc 2000
+#define  maxl 1000
+#define maxc 1000
 
 enum{
     dead, alive
