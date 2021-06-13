@@ -8,8 +8,8 @@
 /*  game of lide    */
 
 
-#define  maxl 2000
-#define maxc 2000
+#define  maxl 1000
+#define maxc 1000
 
 pthread_cond_t cv =PTHREAD_COND_INITIALIZER;
 pthread_mutex_t mutex= PTHREAD_MUTEX_INITIALIZER;

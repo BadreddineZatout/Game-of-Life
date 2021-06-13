@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <windows.h>
+#include <time.h> 
 /*  game of lide    */
 
 
@@ -110,12 +111,15 @@ int main(void){
           {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         };
     set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
+    int t1 = clock();
     for(int i=0; i<nbr_gen;i++){
-        system("cls");
+        //system("cls");
         update(&matrix[0][0], &bis[0][0], ml, mc);
-        print_matrix(&matrix[0][0], ml, mc);
-        Sleep(10);
+        //print_matrix(&matrix[0][0], ml, mc);
+        //Sleep(10);
     }
-    
+    int t2 = clock();
+    float temps = (float)(t2-t1)/CLOCKS_PER_SEC;
+    printf("temps = %f\n", temps);
     return 0;
 }
