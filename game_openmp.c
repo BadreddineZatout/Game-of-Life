@@ -5,8 +5,8 @@
 /*  game of lide    */
 
 
-#define  maxl 1000
-#define maxc 1000
+#define  ml 1000
+#define mc 1000
 
 enum{
     dead, alive
@@ -17,7 +17,7 @@ void print_matrix(char *m, int l, int c){
         printf("--");
     }
     printf("\n");
-    for(int i=0; i<maxl; i++){
+    for(int i=0; i<ml; i++){
         printf("| ");
         for(int j=0; j<c; j++){
             if(*(m + i*c+ j)){
@@ -91,20 +91,28 @@ void set_matrix(char *m, int l, int c,char *s, int sl, int sc, int x, int y){
 }
 
 int main(void){
-    char matrix[maxl][maxc] = {dead};
-    char bis[maxl][maxc]= {dead};
-    char canon[3][3] = {
-          {0,0,0},
-          {1,1,1},
-          {0,0,0},
+    int nbr_gen;
+    printf("BIENVENU AU JEU DE LA VIE\n");
+    printf("veuilllez entres le nombre des generations : ");
+    scanf("%d",&nbr_gen);
+    char matrix[ml][mc] = {dead};
+    char bis[ml][mc]= {dead};
+    char canon[9][36] = {
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
+          {1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+          {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         };
-    set_matrix(&matrix[0][0], maxl, maxc, &canon[0][0], 3, 3, 10, 10);
+    set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
     int i=0;
     double t1= omp_get_wtime();
-    while(i<=200)
-    {
-        updateV1(&matrix[0][0], &bis[0][0], maxl, maxc);
-        i++;
+    for(int i=0; i<nbr_gen;i++){
+        updateV1(&matrix[0][0], &bis[0][0], ml, mc);
     }
     printf("le temps %lf",omp_get_wtime()-t1);
     return 0;
