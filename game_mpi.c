@@ -5,8 +5,8 @@
 /*  game of lide    */
 
 
- #define  ml 1000
- #define mc 1000
+ #define  ml 4
+ #define mc 4
 
 enum{
     dead, alive
@@ -59,18 +59,32 @@ char update_cell(char *m, int ipos, int jpos, int l, int c){
     }
 }
 
-void update(char *m, char *bis, int l, int c){
+void update(char m[ml][mc], char bis[ml][mc], int l, int c){
+    int rank , code, size ;
+    MPI_Status status;
+    const int root = 0;
+    code = MPI_Comm_size(MPI_COMM_WORLD,&size);
+    code = MPI_Comm_rank(MPI_COMM_WORLD ,&rank);
+    printf("proc %d / %d \n",rank,size);
+    char local[ml][mc];
+    // Calculate how much lines to give to every processor :
+    int cols_for_each_proc = c / size;
+    if(c%size != 0) cols_for_each_proc++;
+    printf("Lines for each proc : %d\n",cols_for_each_proc);
+    for(int i=0;i<l;i++){
+        MPI_Scatter(m[i], cols_for_each_proc ,MPI_CHAR ,local[i] , cols_for_each_proc ,MPI_CHAR,root ,MPI_COMM_WORLD);
+    }
     for(int i=0; i<l; i++){
-        for(int j=0; j<c; j++){
-            *(bis + i * c +j) = update_cell(m,i,j,l,c);
+        for(int j=0; j<cols_for_each_proc && j*rank<c; j++){
+            bis[i][j+rank*cols_for_each_proc] = update_cell(&m[0][0],i,j+rank*cols_for_each_proc,l,c);
+            local[i][j]=bis[i][j+rank*cols_for_each_proc];
         }
     }
-    for (int i = 0; i < l; i++)
-    {
-        for(int j=0; j<c; j++){
-            *(m + i * c +j) = *(bis + i * c +j);
-        }
+    MPI_Barrier(MPI_COMM_WORLD);
+    for(int i=0;i<l;i++){
+        MPI_Gather( local[i] ,cols_for_each_proc , MPI_CHAR ,m[i] ,cols_for_each_proc ,MPI_CHAR ,root ,MPI_COMM_WORLD);
     }
+    
     
 }
 
@@ -95,10 +109,9 @@ int main(int argc,char **argv){
     int rank , i, code, size ;
     // MPI_Init( int* argc , char*** argv);
     code = MPI_Init( NULL,NULL);
+    MPI_Status status;
     code = MPI_Comm_size(MPI_COMM_WORLD,&size);
     code = MPI_Comm_rank(MPI_COMM_WORLD ,&rank);
-    MPI_Bcast( &nbr_gen,1,MPI_INT,0,MPI_COMM_WORLD);
-
     // printf("veuilllez entres les dimensions : \n");
     // printf("Nombre des lignes : ");
     // scanf("%d",&l);
@@ -109,28 +122,25 @@ int main(int argc,char **argv){
     }
     char matrix[ml][mc]= {dead};
     char bis[ml][mc] = {dead};
-    char canon[9][36] = {
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
-          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1},
-          {1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-          {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
+    char canon[3][3] = {
+          {0,0,0},
+          {1,1,1},
+          {0,0,0},
         };
-    set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
+    set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 3, 3, 0, 0);
     int t1 = clock();
     for(int i=0; i<nbr_gen;i++){
         //system("cls");
-        update(&matrix[0][0], &bis[0][0], ml, mc);
-        //print_matrix(&matrix[0][0], ml, mc);
+        update(matrix, bis, ml, mc);
+        if(rank == 0){
+            print_matrix(&matrix[0][0], ml, mc);
+        }
         //Sleep(10);
     }
     int t2 = clock();
     float temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps = %f\n", temps);
     MPI_Finalize();
+
     return 0;
 }
