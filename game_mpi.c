@@ -5,8 +5,8 @@
 /*  game of lide    */
 
 
- #define  ml 80
- #define mc 80
+ #define  ml 40
+ #define mc 40
 
 enum{
     dead, alive
@@ -33,16 +33,16 @@ void print_matrix(char *m, int l, int c){
     }
 }
 
-char update_cell(char *m, int ipos, int jpos, int l, int c){
+char update_cell(char m[ml][mc], int ipos, int jpos){
     int nb =0;
     int i, j;
     for (i = ipos-1; i <= ipos+1; i++)
     {
-        if(i>=0 && i<l){
+        if(i>=0 && i<ml){
             for(j=jpos-1; j<=jpos+1; j++){
-                if(j>=0 && j<c){
+                if(j>=0 && j<mc){
                     if(i!=ipos || j!=jpos){
-                        if(*(m + i * c + j)==alive){
+                        if((m[i][j])==alive){
                             nb++;
                         }
                     }
@@ -50,7 +50,7 @@ char update_cell(char *m, int ipos, int jpos, int l, int c){
             }
         }
     }
-    if(*(m + ipos * c + jpos)==alive){
+    if(m[ipos][jpos]==alive){
         if(nb==2 || nb==3) return alive;
         else return dead;
     }else{
@@ -69,24 +69,24 @@ void update(char m[ml][mc], char bis[ml][mc], int l, int c){
     char local[ml][mc];
     // Calculate how much lines to give to every processor :
     int cols_for_each_proc = c / size;
-    int col_terminal = l-(cols_for_each_proc*size-1);
-    if(c%size != 0) cols_for_each_proc++;
+    if(c%size != 0) {cols_for_each_proc++;}
     printf("Lines for each proc : %d\n",cols_for_each_proc);
     for(int i=0;i<l;i++){
         MPI_Scatter(m[i], cols_for_each_proc ,MPI_CHAR ,local[i] , cols_for_each_proc ,MPI_CHAR,root ,MPI_COMM_WORLD);
     }
+    MPI_Barrier(MPI_COMM_WORLD);
     for(int i=0; i<l; i++){
         for(int j=0; j<cols_for_each_proc && j*rank<c; j++){
-            bis[i][j+rank*cols_for_each_proc] = update_cell(&m[0][0],i,j+rank*cols_for_each_proc,l,c);
+            bis[i][j+rank*cols_for_each_proc] = update_cell(m,i,j+rank*cols_for_each_proc);
             local[i][j]=bis[i][j+rank*cols_for_each_proc];
         }
     }
     MPI_Barrier(MPI_COMM_WORLD);
     for(int i=0;i<l;i++){
-        MPI_Gather( local[i] ,cols_for_each_proc , MPI_CHAR ,m[i] ,cols_for_each_proc ,MPI_CHAR ,root ,MPI_COMM_WORLD);
+        //MPI_Gather( local[i] ,cols_for_each_proc , MPI_CHAR ,m[i] ,cols_for_each_proc ,MPI_CHAR ,root ,MPI_COMM_WORLD);
+        MPI_Allgather( local[i] ,  cols_for_each_proc ,  MPI_CHAR , m[i] , cols_for_each_proc , MPI_CHAR , MPI_COMM_WORLD ); 
     }
-    
-    
+      
 }
 
 void set_matrix(char *m, int l, int c,char *s, int sl, int sc, int x, int y){
@@ -134,7 +134,7 @@ int main(int argc,char **argv){
           {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
           {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         };
-    set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
+    set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 0, 0);
     int t1 = clock();
     for(int i=0; i<nbr_gen;i++){
         //system("cls");
