@@ -5,8 +5,8 @@
 /*  game of lide    */
 
 
- #define  ml 4
- #define mc 4
+ #define  ml 6
+ #define mc 6
 
 enum{
     dead, alive
@@ -69,6 +69,7 @@ void update(char m[ml][mc], char bis[ml][mc], int l, int c){
     char local[ml][mc];
     // Calculate how much lines to give to every processor :
     int cols_for_each_proc = c / size;
+    int col_terminal = l-(cols_for_each_proc*size-1);
     if(c%size != 0) cols_for_each_proc++;
     printf("Lines for each proc : %d\n",cols_for_each_proc);
     for(int i=0;i<l;i++){
