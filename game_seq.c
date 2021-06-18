@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> 
-/*  game of life    */
+            /*  game of life    */
 
 
- #define  ml 1000
- #define mc 1000
+ #define  ml 1000       // nombre des lignes
+ #define mc 1000        // nombre des colonnes
 
+//etat d'un cellule
 enum{
     dead, alive
 };
 
+//fonction pour afficher la matrice
 void print_matrix(char *m, int l, int c){
     for(int i=0; i<c+2; i++){
         printf("--");
@@ -32,6 +34,7 @@ void print_matrix(char *m, int l, int c){
     }
 }
 
+// fonction de la mise à jour d'un cellule
 char update_cell(char *m, int ipos, int jpos, int l, int c){
     int nb =0;
     int i, j;
@@ -58,6 +61,7 @@ char update_cell(char *m, int ipos, int jpos, int l, int c){
     }
 }
 
+// focntion de mise à jour de la matrice
 void update(char *m, char *bis, int l, int c){
     for(int i=0; i<l; i++){
         for(int j=0; j<c; j++){
@@ -73,6 +77,7 @@ void update(char *m, char *bis, int l, int c){
     
 }
 
+//  fonction de initialisation de  matrice avec la configuration
 void set_matrix(char *m, int l, int c,char *s, int sl, int sc, int x, int y){
     for (int i = y; i < y+sl; i++)
     {
@@ -92,6 +97,8 @@ int main(void){
     scanf("%d",&nbr_gen);
     char matrix[ml][mc]= {dead};
     char bis[ml][mc] = {dead};
+
+    //  la matrice de configuration
     char canon[9][36] = {
           {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0},
           {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0},
@@ -103,12 +110,16 @@ int main(void){
           {0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
           {0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
         };
+
+    // initialiser la matrice matrix avec la configuration canon
     set_matrix(&matrix[0][0], ml, mc, &canon[0][0], 9, 36, 10, 10);
+
     int t1 = clock();
     for(int i=0; i<nbr_gen;i++){
         update(&matrix[0][0], &bis[0][0], ml, mc);
     }
     int t2 = clock();
+    //calclue de temps d'éxecution
     float temps = (float)(t2-t1)/CLOCKS_PER_SEC;
     printf("temps = %f\n", temps);
     return 0;
