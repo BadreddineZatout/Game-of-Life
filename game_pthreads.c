@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <time.h>
 
-/*  game of lide    */
+/*  game of life    */
 
 
 #define  maxl 1000
@@ -135,7 +135,8 @@ void set_matrix(char *m, int l, int c,char *s, int sl, int sc, int x, int y){
 }
 
 int main(void){
- float temps;
+    printf("BIENVENU AU JEU DE LA VIE\n");
+    float temps;
     clock_t t1, t2;
     char matrix[maxl][maxc] = {dead};
     char bis[maxl][maxc]= {dead};
@@ -153,7 +154,7 @@ int main(void){
     set_matrix(&matrix[0][0], maxl, maxc, &canon[0][0], 9, 36, 10, 10);
     int i=0;
    
-   int nb_threads=1;
+   int nb_threads=4;
    pthread_t tab [nb_threads];
    
 

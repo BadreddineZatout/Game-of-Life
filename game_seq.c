@@ -1,11 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h> 
-/*  game of lide    */
+/*  game of life    */
 
 
- #define  ml 80
- #define mc 100
+ #define  ml 1000
+ #define mc 1000
 
 enum{
     dead, alive
@@ -86,14 +86,8 @@ void set_matrix(char *m, int l, int c,char *s, int sl, int sc, int x, int y){
 }
 
 int main(void){
-    // int l, c;
     int nbr_gen;
     printf("BIENVENU AU JEU DE LA VIE\n");
-    // printf("veuilllez entres les dimensions : \n");
-    // printf("Nombre des lignes : ");
-    // scanf("%d",&l);
-    // printf("\nNombre des colonnes : ");
-    // scanf("%d",&c);
     printf("veuilllez entres le nombre des generations : ");
     scanf("%d",&nbr_gen);
     char matrix[ml][mc]= {dead};
@@ -113,7 +107,6 @@ int main(void){
     int t1 = clock();
     for(int i=0; i<nbr_gen;i++){
         update(&matrix[0][0], &bis[0][0], ml, mc);
-        // print_matrix(&matrix[0][0], ml, mc);
     }
     int t2 = clock();
     float temps = (float)(t2-t1)/CLOCKS_PER_SEC;

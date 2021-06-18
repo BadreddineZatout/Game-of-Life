@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <omp.h>
-/*  game of lide    */
+/*  game of life    */
 
 
 #define  ml 1000
@@ -60,7 +60,7 @@ char update_cell(char *m, int ipos, int jpos, int l, int c){
 }
 
 void updateV1(char *m, char *bis, int l, int c){
-    omp_set_num_threads(1);
+    omp_set_num_threads(4);
     #pragma omp parallel for
     for(int i=0; i<l; i++){
         for(int j=0; j<c; j++){
